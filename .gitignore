@@ -1,1 +1,4 @@
 *.pyc
+build/*
+dist/*
+matrix_optics.egg-info/*
