@@ -10,7 +10,7 @@ config = {
         'matrix_optics',
         'matrix_optics.numeric',
         'matrix_optics.symbolic'],
-    'install_requires': ['numpy', 'nose'],
+    'install_requires': ['numpy', 'sympy', 'nose'],
     'author': 'Evan M. Davis',
     'author_email': 'emd@mit.edu',
     'url': '',

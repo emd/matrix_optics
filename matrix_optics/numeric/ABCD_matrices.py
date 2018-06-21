@@ -2,7 +2,7 @@ import numpy as np
 
 
 def lens(f):
-    'Get ABCD matrix for lens of focal length `f`.'
+    'Get ABCD matrix for thin lens of focal length `f`.'
     return np.matrix([
         [ 1.,     0.],
         [-1. / f, 1.]])
