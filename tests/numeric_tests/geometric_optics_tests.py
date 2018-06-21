@@ -65,14 +65,14 @@ def test_Ray_focusing():
     # Finite focal length does do focusing for off-axis ray;
     # immediately after lens, the angle `theta` is altered, but
     # the transverse distance `rho` is not altered
-    rho0 = 1
+    rho0 = 1.
     theta0 = 0
     r0 = Ray(rho0, theta0)
 
     f = 1
     r = r0.applyABCD(lens(f))
     tools.assert_almost_equal(r.rho, rho0)
-    tools.assert_almost_equal(r.theta, theta0 - (1. / f))
+    tools.assert_almost_equal(r.theta, theta0 - (rho0 / f))
 
     return
 
