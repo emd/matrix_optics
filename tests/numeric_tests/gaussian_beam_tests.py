@@ -1,8 +1,8 @@
 from nose import tools
 import numpy as np
 
-from matrix_optics.gaussian_beam import GaussianBeam, w, R
-from matrix_optics.ABCD_matrices import prop, lens
+from matrix_optics.numeric.gaussian_beam import GaussianBeam, w, R
+from matrix_optics.numeric.ABCD_matrices import prop, lens
 
 
 def test_GaussianBeam__init__():

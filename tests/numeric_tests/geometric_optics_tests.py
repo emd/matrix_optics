@@ -1,8 +1,8 @@
 from nose import tools
 import numpy as np
 
-from matrix_optics.ABCD_matrices import prop, lens
-from matrix_optics.geometric_optics import Ray, image_distance
+from matrix_optics.numeric.ABCD_matrices import prop, lens
+from matrix_optics.numeric.geometric_optics import Ray, image_distance
 
 
 def test_Ray_propagation():
