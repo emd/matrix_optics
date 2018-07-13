@@ -149,7 +149,7 @@ def _check_symbol(sym, var):
         The variable to be represented by symbol `sym`.
         Accepted variables are
 
-                ['z', 'R', 'w', 'w0', 'zR']
+                ['z', 'R', 'w', 'w0', 'zR', 'lambda0']
 
         otherwise a ValueError is raised.
 
@@ -178,6 +178,9 @@ def _check_symbol(sym, var):
         assert sym.is_positive, '`%s` must be explicitly *positive*.' % sym
     elif var == 'zR':
         # Rayleigh range `zR` must be explicitly positive
+        assert sym.is_positive, '`%s` must be explicitly *positive*.' % sym
+    elif var == 'lambda0':
+        # Vacuum wavelength `lambda0` must be explicitly positive
         assert sym.is_positive, '`%s` must be explicitly *positive*.' % sym
     else:
         raise ValueError("'%s' *not* a recognized variable." % var)

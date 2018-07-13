@@ -63,11 +63,21 @@ def test__check_symbol():
     zR = sympy.symbols('zR', positive=True)
     _check_symbol(zR, 'zR')
 
+    # Vacuum wavelengths must be explicitly positive
+    lambda0 = sympy.symbols('lambda0')
+    tools.assert_raises(
+        AssertionError,
+        _check_symbol,
+        lambda0, 'lambda0')
+
+    lambda0 = sympy.symbols('lambda0', positive=True)
+    _check_symbol(lambda0, 'lambda0')
+
     # Non-recognized variable `a` raises ValueError
     tools.assert_raises(
         ValueError,
         _check_symbol,
-        zR, 'a')
+        lambda0, 'a')
 
     return
 
