@@ -1,5 +1,6 @@
 import sympy
-from sympy.core.numbers import pi, I, oo
+from sympy.core.numbers import pi, I, oo, Zero
+from sympy.core.singleton import Singleton
 
 
 # class GaussianBeam(object):
@@ -96,6 +97,10 @@ def w(z, w0, zR):
         [w] = [z]
 
     '''
+    _check_symbol(z, 'z')
+    _check_symbol(w0, 'w0')
+    _check_symbol(zR, 'zR')
+
     return w0 * sympy.sqrt(1 + ((z / zR) ** 2))
 
 
@@ -120,9 +125,12 @@ def R(z, zR):
         [R] = [z]
 
     '''
+    _check_symbol(z, 'z')
+    _check_symbol(zR, 'zR')
+
     # Waist needs special treatment, as sympy does not correctly evaluate
     # the general expression.
-    if z == 0:
+    if z == Zero:
         return oo
     else:
         return sympy.simplify(z * (1 + ((zR / z) ** 2)))
@@ -133,7 +141,8 @@ def _check_symbol(sym, var):
 
     Input parameters:
     -----------------
-    sym - :py:class:`Symbol <sympy.core.symbol.Symbol>` instance
+    sym - :py:class:`Symbol <sympy.core.symbol.Symbol>` instance or
+            :py:class:`Singleton <sympy.core.singleton.Singleton>` instance
         The symbol to be used for representation of variable `var`.
 
     var - string
@@ -151,8 +160,9 @@ def _check_symbol(sym, var):
 
     '''
     # Ensure `sym` is an instance of sympy `Symbol` class
-    if not isinstance(sym, sympy.Symbol):
-        raise TypeError('`sym` must be an instance of `sympy.Symbol` class.')
+    if not (isinstance(sym, sympy.Symbol) or isinstance(sym, Singleton)):
+        raise TypeError(
+            '`sym` must be an instance of sympy Symbol or Singleton class.')
 
     if var == 'z':
         # Axial distance `z` must be explicitly real

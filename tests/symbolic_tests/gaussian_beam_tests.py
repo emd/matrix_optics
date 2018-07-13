@@ -1,6 +1,6 @@
 from nose import tools
 import sympy
-from sympy.core.numbers import pi, I, oo
+from sympy.core.numbers import pi, I, oo, Zero
 
 from matrix_optics.symbolic.gaussian_beam import (
     w, R, _check_symbol)
@@ -73,7 +73,8 @@ def test__check_symbol():
 
 
 def test_w_and_R():
-    z, w0, zR = sympy.symbols('z, w0, zR', real=True)
+    z = sympy.symbols('z', real=True)
+    w0, zR = sympy.symbols('w0, zR', positive=True)
 
     # Straightforward algebra with R(z) and w(z) shows that
     # the below equality is true. (Further, a few additional
@@ -83,7 +84,7 @@ def test_w_and_R():
         (zR ** 2) / (z * (w0 ** 2))))
 
     tools.assert_true(sympy.Equality(
-        R(0, zR),
+        R(Zero, zR),
         oo))
 
     return
