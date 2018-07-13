@@ -3,7 +3,7 @@ import sympy
 from sympy.core.numbers import pi, I, oo, Zero
 
 from matrix_optics.symbolic.gaussian_beam import (
-    w, R, _check_symbol)
+    _check_symbol, w, R, GaussianBeam)
 
 
 def test__check_symbol():
@@ -100,30 +100,30 @@ def test_w_and_R():
     return
 
 
-# def test_GaussianBeam__init__():
-#     z = sympy.symbols('z', real=True)
-#     w0, zR = sympy.symbols('w0, zR', positive=True)
-#     lambda0 = pi * (w0 ** 2) / zR
-# 
-#     # Test for arbitrary `z`
-#     g = GaussianBeam(
-#         None,
-#         w=w(z, w0, zR),
-#         R=R(z, zR),
-#         wavelength=lambda0)
-# 
-#     tools.assert_true(sympy.Equality(
-#         sympy.factor(g.q, gaussian=True),
-#         z + (I * zR)))
-# 
-#     tools.assert_true(sympy.Equality(
-#         g.R,
-#         R(z, zR)))
-# 
-#     tools.assert_true(sympy.Equality(
-#         g.w,
-#         w(z, w0, zR)))
-# 
-#     # Test for arbitrary `z` = 0
-# 
-#     return
+def test_GaussianBeam__init__():
+    z = sympy.symbols('z', real=True)
+    w0, zR = sympy.symbols('w0, zR', positive=True)
+    lambda0 = pi * (w0 ** 2) / zR
+
+    # Test for arbitrary `z`
+    g = GaussianBeam(
+        None,
+        w=w(z, w0, zR),
+        R=R(z, zR),
+        wavelength=lambda0)
+
+    tools.assert_true(sympy.Equality(
+        sympy.factor(g.q, gaussian=True),
+        z + (I * zR)))
+
+    tools.assert_true(sympy.Equality(
+        g.R,
+        R(z, zR)))
+
+    tools.assert_true(sympy.Equality(
+        g.w,
+        w(z, w0, zR)))
+
+    # Test for arbitrary `z` = 0
+
+    return

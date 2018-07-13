@@ -3,73 +3,68 @@ from sympy.core.numbers import pi, I, oo, Zero
 from sympy.core.singleton import Singleton
 
 
-# class GaussianBeam(object):
-#     def __init__(self, q, w=None, R=None,
-#                  wavelength=sympy.symbols('lambda0', positive=True)):
-#         '''Create an instance of symbolic `GaussianBeam` class.
-# 
-#         Input parameters:
-#         -----------------
-#         q - :py:class:`Symbol <sympy.core.symbol.Symbol>` instance, or None
-#             Complex beam parameter. If `None`, use `w` and `R` to
-#             determine the corresponding value of `q`.
-#             [q] = [wavelength]
-# 
-#         w - :py:class:`Symbol <sympy.core.symbol.Symbol>` instance
-#             1/e E radius of Gaussian beam. Only used if `q` is `None`.
-#             Note that `w` must be explicitly *positive*.
-#             [w] = [wavelength]
-# 
-#         R - :py:class:`Symbol <sympy.core.symbol.Symbol>` instance
-#             Radius of curvature of Gaussian beam. Only used if `q` is `None`.
-#             Note that `R` must be explicitly *real* and that a value of
-#             infinity corresponds to a beam waist.
-#             [R] = [wavelength]
-# 
-#         wavelength - :py:class:`Symbol <sympy.core.symbol.Symbol>` instance
-#             Wavelength of Gaussian beam. Note that `wavelength` must be
-#             explicitly *positive*.
-#             [wavelength] = arbitrary units
-# 
-#         '''
-#         # Enforce that wavelength is always positive.
-#         if wavelength.is_positive:
-#             self.wavelength = wavelength
-#         else:
-#             raise ValueError('`wavelength` must be explicitly *positive*.')
-# 
-#         if q is None:
-#             if (w is not None) and (R is not None):
-#                 # Enforce that 1/e E radius `w` is always positive and
-#                 # that the radius of curvature `R` is always real prior
-#                 # to performing any computations.
-#                 assert w.is_positive, '`w` must be explicitly *positive*.'
-#                 assert R.is_real, '`R` must be explicitly *real*.'
-# 
-#                 qinv = (1 / R) - (I * self.wavelength / (pi * (w ** 2)))
-#                 self.q = sympy.simplify(1 / qinv)
-#             else:
-#                 raise ValueError(
-#                     'Both `w` & `R` must be specified if `q` is None')
-#             pass
-#         else:
-#             self.q = q
-# 
-#     @property
-#     def R(self):
-#         'Get radius of curvature.'
-#         Rinv = sympy.re(1 / self.q)
-# 
-#         if Rinv == 0:
-#             return oo
-#         else:
-#             return sympy.simplify(1 / Rinv)
-# 
-#     @property
-#     def w(self):
-#         'Get 1/e E radius.'
-#         qinv = 1 / self.q
-#         return sympy.sqrt(-self.wavelength / (pi * sympy.im(qinv)))
+class GaussianBeam(object):
+    def __init__(self, q, w=None, R=None,
+                 wavelength=sympy.symbols('lambda0', positive=True)):
+        '''Create an instance of symbolic `GaussianBeam` class.
+
+        Input parameters:
+        -----------------
+        q - :py:class:`Symbol <sympy.core.symbol.Symbol>` instance, or None
+            Complex beam parameter. If `None`, use `w` and `R` to
+            determine the corresponding value of `q`.
+            [q] = [wavelength]
+
+        w - :py:class:`Symbol <sympy.core.symbol.Symbol>` instance
+            1/e E radius of Gaussian beam. Only used if `q` is `None`.
+            Note that `w` must be explicitly *positive*.
+            [w] = [wavelength]
+
+        R - :py:class:`Symbol <sympy.core.symbol.Symbol>` instance
+            Radius of curvature of Gaussian beam. Only used if `q` is `None`.
+            Note that `R` must be explicitly *real* and that a value of
+            infinity corresponds to a beam waist.
+            [R] = [wavelength]
+
+        wavelength - :py:class:`Symbol <sympy.core.symbol.Symbol>` instance
+            Wavelength of Gaussian beam. Note that `wavelength` must be
+            explicitly *positive*.
+            [wavelength] = arbitrary units
+
+        '''
+        # Enforce that wavelength is always positive.
+        _check_symbol(wavelength, 'lambda0')
+        self.wavelength = wavelength
+
+        if q is None:
+            if (w is not None) and (R is not None):
+                _check_symbol(w, 'w')
+                _check_symbol(R, 'R')
+
+                qinv = (1 / R) - (I * self.wavelength / (pi * (w ** 2)))
+                self.q = sympy.simplify(1 / qinv)
+            else:
+                raise ValueError(
+                    'Both `w` & `R` must be specified if `q` is None')
+        else:
+            self.q = q
+
+    @property
+    def R(self):
+        'Get radius of curvature.'
+        Rinv = sympy.re(1 / self.q)
+
+        if Rinv == Zero:
+            return oo
+        else:
+            return sympy.simplify(1 / Rinv)
+
+    @property
+    def w(self):
+        'Get 1/e E radius.'
+        qinv = 1 / self.q
+        return sympy.simplify(
+            sympy.sqrt(-self.wavelength / (pi * sympy.im(qinv))))
 
 
 def w(z, w0, zR):
@@ -101,7 +96,7 @@ def w(z, w0, zR):
     _check_symbol(w0, 'w0')
     _check_symbol(zR, 'zR')
 
-    return w0 * sympy.sqrt(1 + ((z / zR) ** 2))
+    return sympy.simplify(w0 * sympy.sqrt(1 + ((z / zR) ** 2)))
 
 
 def R(z, zR):
@@ -141,8 +136,7 @@ def _check_symbol(sym, var):
 
     Input parameters:
     -----------------
-    sym - :py:class:`Symbol <sympy.core.symbol.Symbol>` instance or
-            :py:class:`Singleton <sympy.core.singleton.Singleton>` instance
+    sym - a sympy expression, variable, or singleton
         The symbol to be used for representation of variable `var`.
 
     var - string
@@ -160,7 +154,7 @@ def _check_symbol(sym, var):
 
     '''
     # Ensure `sym` is an instance of sympy `Symbol` class
-    if not (isinstance(sym, sympy.Symbol) or isinstance(sym, Singleton)):
+    if not (isinstance(sym, sympy.Expr) or isinstance(sym, Singleton)):
         raise TypeError(
             '`sym` must be an instance of sympy Symbol or Singleton class.')
 
