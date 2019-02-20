@@ -1,3 +1,3 @@
-import ABCD_matrices
-import gaussian_beam
-import geometric_optics
+from . import ABCD_matrices
+from . import gaussian_beam
+from . import geometric_optics

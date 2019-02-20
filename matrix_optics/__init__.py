@@ -1,2 +1,2 @@
-import numeric
-import symbolic
+from . import numeric
+from . import symbolic
